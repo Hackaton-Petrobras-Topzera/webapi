@@ -9,12 +9,13 @@ class BaseContract(JSONEncoder):
 
 class GasStation(BaseContract):
     def __init__(self,
+                 id=0,
                  latitude=0,
                  longitude=0,
                  franchise=False,
                  has_br_mania=False,
                  favorite=False):
-        super().__init__()
+        super().__init__(id)
         self.latitude = latitude
         self.longitude = longitude
         self.franchise = franchise
