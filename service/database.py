@@ -14,10 +14,45 @@ class Dao:
     def close_connection(self):
         self.client.close()
 
-
-class ProductDao(Dao):
     def get_database(self):
         return self.client['hackathon_br']
+
+class LocationDao(Dao):
+
+    def get_location_collection(self):
+        self.connect()
+        gas_station_database = self.get_database()
+        return gas_station_database['gas_station']
+
+    def get_all_gas_stations_from_rj(self):
+
+        collection = self.get_location_collection()
+
+        result = []
+
+        all_gas_station_from_rj = collection.find({
+                                                    "state": "RJ",
+                                                    "latitude": {"$ne": "NULL"}
+                                                  })
+
+        for location in all_gas_station_from_rj:
+            location.pop("_id")
+            location.pop("state")
+            location.pop("ignore")
+            location.pop("country")
+            location.pop("neighborhood")
+            location.pop("document_number")
+            location.pop("street")
+            location.pop("zipcode")
+            location.pop("number")
+            location.pop("city")
+            result.append(location)
+
+        return result
+
+
+
+class ProductDao(Dao):
 
     def get_product_collection(self):
         self.connect()
@@ -71,17 +106,6 @@ class ProductDao(Dao):
 
             item = collection.find_one({"id": identifier})
             arrangements = map(int, item['arrangement'].replace('[', "").replace(']', "").split(','))
-            # item['arrangement'] = self.search_arrangements(arrangements)
-            # item.pop('_id')
-            #
-            # product = Product(id=item['id'],
-            #                   name=item['name'],
-            #                   price=item['price'],
-            #                   category=item['category'],
-            #                   image=item['image'],
-            #                   arrangement=item['arrangement'],
-            #                   premia_bonus=item['premia_bonus'],
-            #                   price_with_discount=item['price_with_discount'])
             results = self.search_arrangements(arrangements)
 
             self.close_connection()
