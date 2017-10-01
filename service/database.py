@@ -11,7 +11,6 @@ class Dao:
     def connect(self):
         # self.client = MongoClient('localhost', 27017)
         self.client = MongoClient(os.environ['MONGO'])
-        # self.client = MongoClient("mongodb://topzera:HackatopPetro@ds155934.mlab.com:55934/hackathon_br")
 
     def close_connection(self):
         self.client.close()
@@ -63,7 +62,10 @@ class ProductDao(Dao):
         collection = self.get_product_collection()
 
         for arrangement in arrangements:
-            item = collection.find_one({"id": arrangement})
+            item = collection.find_one({
+                "$query": {"category": arrangement},
+                "$orderby": {"total_purchased": -1}
+            })
             item.pop('arrangement')
             item.pop('_id')
             all_arrangements.append(item)
@@ -78,7 +80,8 @@ class ProductDao(Dao):
             collection = self.get_product_collection()
 
             item = collection.find_one({"id": identifier})
-            arrangements = map(int, item['arrangement'].replace('[', "").replace(']', "").split(','))
+            item['arrangement'] = item['arrangement'].replace("“", "\"").replace("”", "\"")
+            arrangements = ast.literal_eval(item['arrangement'])
             item['arrangement'] = self.search_arrangements(arrangements)
             item.pop('_id')
 
@@ -102,8 +105,10 @@ class ProductDao(Dao):
 
             collection = self.get_product_collection()
 
+            # get product
             item = collection.find_one({"id": identifier})
-            arrangements = map(int, item['arrangement'].replace('[', "").replace(']', "").split(','))
+            item['arrangement'] = item['arrangement'].replace("“", "\"").replace("”", "\"")
+            arrangements = ast.literal_eval(item['arrangement'])
             results = self.search_arrangements(arrangements)
 
             self.close_connection()
@@ -139,7 +144,6 @@ class ProductDao(Dao):
 
 
 class OrderDao(Dao):
-
     def get_order_collection(self):
         self.connect()
         order_database = self.get_database()
@@ -161,7 +165,6 @@ class OrderDao(Dao):
         except Exception as e:
             print(e)
             return None
-
 
     def post_order(self):
         try:
