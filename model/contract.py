@@ -1,3 +1,5 @@
+import uuid
+
 from flask.json import JSONEncoder
 
 
@@ -44,3 +46,45 @@ class Product(BaseContract):
         self.arrangement = arrangement
         self.premia_bonus = premia_bonus
         self.price_with_discount = price_with_discount
+
+
+class Purchase:
+    def __init__(self,
+                 product_id=None,
+                 quantity=None):
+        self.product_id = product_id
+        self.quantity = quantity
+
+
+class Payment:
+
+    # {
+    #     "number": "5425019448107793",
+    #     "holder_name": "Luke Skywalker",
+    #     "exp_month": 1,
+    #     "exp_year": 19,
+    #     "cvv": "351",
+    #     "purchase": [
+    #         {
+    #             "product_id": 3,
+    #             "quantity": 1
+    #         }, {
+    #             "product_id": 2,
+    #             "quantity": 4
+    #         }
+    #     ]
+    # }
+    def __init__(self,
+                 number=None,
+                 holder_name=None,
+                 exp_month=None,
+                 exp_year=None,
+                 cvv=None,
+                 purchase=[]):
+        self.number = number
+        self.holder_name = holder_name
+        self.exp_month = exp_month
+        self.exp_year = exp_year
+        self.cvv = cvv
+        self.purchase = purchase
+        self.id = str(uuid.uuid4())

@@ -144,6 +144,24 @@ class ProductDao(Dao):
             return None
 
 
+class PaymentDao(Dao):
+    def get_product_collection(self):
+        self.connect()
+        payments_database = self.get_database()
+        return payments_database['payments']
+
+    def save(self, payment):
+        try:
+
+            collection = self.get_product_collection()
+            collection.insert(payment.__dict__)
+            self.close_connection()
+
+            return True
+        except Exception:
+            return False
+
+
 class OrderDao(Dao):
     def get_order_collection(self):
         self.connect()

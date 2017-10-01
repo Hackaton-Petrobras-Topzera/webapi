@@ -1,10 +1,11 @@
 import json
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask.ext.cors import cross_origin
 
+from model.contract import Payment
 from service.database import Dao
-from service.service import GasStationService, ProductService, OrderService
+from service.service import GasStationService, ProductService, OrderService, PaymentService
 
 app = Flask(__name__)
 
@@ -38,8 +39,11 @@ def gas_station():
 @app.route('/authorization', methods=['POST'])
 @cross_origin()
 def authorization():
-    # all_gas = GasStationService().select_all_gas()
-    return jsonify(success=True), 200
+    data = request.get_json()
+    payment = Payment(number=data['number'], holder_name=data['holder_name'],
+                      exp_month=data['exp_month'], exp_year=data['exp_year'],
+                      cvv=data['cvv'], purchase=data['purchase'])
+    return jsonify(success=PaymentService().authorize(payment), id=payment.id), 200
 
 
 @app.route('/products/all')

@@ -1,4 +1,4 @@
-from service.database import ProductDao, LocationDao, OrderDao
+from service.database import ProductDao, LocationDao, OrderDao, PaymentDao
 
 
 class GasStationService:
@@ -23,3 +23,8 @@ class OrderService:
 
     def order_product(self):
         return OrderDao.post_order()
+
+
+class PaymentService:
+    def authorize(self, payment):
+        return PaymentDao().save(payment)
