@@ -1,5 +1,5 @@
 from model.contract import GasStation
-from service.database import ProductDao, LocationDao
+from service.database import ProductDao, LocationDao, OrderDao
 
 
 class GasStationService:
@@ -16,3 +16,7 @@ class ProductService:
 
     def find_by_id(self, id):
         return ProductDao().get_by_id(id)
+
+class OrderService:
+    def select_opened_orders(self):
+        return OrderDao().search_orders();

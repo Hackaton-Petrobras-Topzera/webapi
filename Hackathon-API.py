@@ -3,7 +3,7 @@ import json
 from flask import Flask, jsonify
 
 from service.database import Dao
-from service.service import GasStationService, ProductService
+from service.service import GasStationService, ProductService, OrderService
 
 app = Flask(__name__)
 
@@ -56,6 +56,11 @@ def connection_status():
     dao.connect()
     dao.close_connection()
     return jsonify(connection=True), 200
+
+@app.route('/orders/opened')
+def get_all_opened_orders():
+    orders = OrderService().select_opened_orders()
+    return to_json(orders)
 
 
 if __name__ == '__main__':

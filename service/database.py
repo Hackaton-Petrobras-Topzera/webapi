@@ -138,3 +138,28 @@ class ProductDao(Dao):
             return products
         except Exception:
             return None
+
+
+class OrderDao(Dao):
+
+    def get_order_collection(self):
+        self.connect()
+        order_database = self.get_database()
+        return order_database['orders']
+
+    def search_orders(self):
+        try:
+            all_orders = []
+            collection = self.get_order_collection()
+
+            orders = collection.find({})
+
+            for order in orders:
+                order.pop('_id')
+                all_orders.append(order)
+
+            self.close_connection()
+            return all_orders
+        except Exception as e:
+            print(e)
+            return None
