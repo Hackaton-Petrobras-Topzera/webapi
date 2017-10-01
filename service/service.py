@@ -1,3 +1,4 @@
+from model.contract import Payment
 from service.database import ProductDao, LocationDao, OrderDao, PaymentDao
 
 
@@ -9,6 +10,9 @@ class GasStationService:
 class ProductService:
     def search_only_arrangement(self, id):
         return ProductDao().get_only_arrangement(id)
+
+    def suggestions(self):
+        return ProductDao().suggestions()
 
     def select_all(self):
         return ProductDao().all()
@@ -26,5 +30,8 @@ class OrderService:
 
 
 class PaymentService:
-    def authorize(self, payment):
-        return PaymentDao().save(payment)
+    def authorize(self, data):
+        payment = Payment(number=data['number'], holder_name=data['holder_name'],
+                          exp_month=data['exp_month'], exp_year=data['exp_year'],
+                          cvv=data['cvv'], purchase=data['purchase'])
+        return PaymentDao().save(payment), payment.id

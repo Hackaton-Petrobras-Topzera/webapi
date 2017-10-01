@@ -143,6 +143,32 @@ class ProductDao(Dao):
         except Exception:
             return None
 
+    def suggestions(self):
+        try:
+
+            collection = self.get_product_collection()
+            suggestions = []
+
+            # for item in collection.find({}).sort({"total_purchased": -1}):
+            for item in collection.find({"$query": {}, "$orderby": {"total_purchased": -1}}).limit(5):
+                item.pop('_id')
+                item.pop('arrangement')
+
+                product = Product(id=item['id'],
+                                  name=item['name'],
+                                  price=item['price'],
+                                  category=item['category'],
+                                  image=item['image'],
+                                  premia_bonus=item['premia_bonus'],
+                                  price_with_discount=item['price_with_discount'])
+                suggestions.append(product)
+
+            self.close_connection()
+
+            return suggestions
+        except Exception:
+            return None
+
 
 class PaymentDao(Dao):
     def get_product_collection(self):

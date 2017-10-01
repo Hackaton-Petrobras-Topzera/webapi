@@ -39,11 +39,15 @@ def gas_station():
 @app.route('/authorization', methods=['POST'])
 @cross_origin()
 def authorization():
-    data = request.get_json()
-    payment = Payment(number=data['number'], holder_name=data['holder_name'],
-                      exp_month=data['exp_month'], exp_year=data['exp_year'],
-                      cvv=data['cvv'], purchase=data['purchase'])
-    return jsonify(success=PaymentService().authorize(payment), id=payment.id), 200
+    status, id = PaymentService().authorize(request.get_json())
+    return jsonify(success=status, id=id), 200
+
+
+@app.route('/products/suggestions')
+@cross_origin()
+def suggestions():
+    products = ProductService().suggestions()
+    return to_json(products)
 
 
 @app.route('/products/all')
@@ -81,6 +85,7 @@ def connection_status():
 def get_all_opened_orders():
     orders = OrderService().select_opened_orders()
     return to_json(orders)
+
 
 # Not working
 @app.route('/order', methods=['POST'])
