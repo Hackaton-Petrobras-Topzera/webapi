@@ -36,11 +36,6 @@ def connection_status():
     dao.close_connection()
     return jsonify(connection=True), 200
 
-@app.route('/gasstation')
-def gas_station():
-    all_gas = GasStationService().select_all_gas()
-    return to_json(all_gas)
-
 
 if __name__ == '__main__':
     app.run()
