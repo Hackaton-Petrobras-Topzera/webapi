@@ -3,13 +3,14 @@ import json
 from flask import Flask, jsonify
 
 from service.database import Dao
-from service.service import GasStationService
+from service.service import GasStationService, ProductService
 
 app = Flask(__name__)
 
 
 def obj_dict(obj):
     return obj.__dict__
+
 
 def to_json(data):
     response = app.response_class(
@@ -18,6 +19,7 @@ def to_json(data):
         mimetype='application/json'
     )
     return response
+
 
 @app.route('/')
 def hello_world():
@@ -28,6 +30,25 @@ def hello_world():
 def gas_station():
     all_gas = GasStationService().select_all_gas()
     return to_json(all_gas)
+
+
+@app.route('/products/all')
+def get_all_products():
+    products = ProductService().select_all()
+    return to_json(products)
+
+
+@app.route('/products/<id>')
+def get_product_by_id(id):
+    product = ProductService().find_by_id(int(id))
+    return to_json(product)
+
+
+@app.route('/products/<id>/arrangements')
+def get_only_arrangements(id):
+    product = ProductService().search_only_arrangement(int(id))
+    return to_json(product)
+
 
 @app.route('/connection/status')
 def connection_status():
