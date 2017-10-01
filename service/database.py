@@ -17,43 +17,38 @@ class Dao:
     def get_database(self):
         return self.client['hackathon_br']
 
-class LocationDao(Dao):
 
+class LocationDao(Dao):
     def get_location_collection(self):
         self.connect()
         gas_station_database = self.get_database()
         return gas_station_database['gas_station']
 
     def get_all_gas_stations_from_rj(self):
-
         collection = self.get_location_collection()
 
         result = []
 
         all_gas_station_from_rj = collection.find({
-                                                    "state": "RJ",
-                                                    "latitude": {"$ne": "NULL"}
-                                                  })
+            "state": "RJ",
+            "latitude": {"$ne": "NULL"}
+        }, {
+            "latitude": 1,
+            "longitude": 1,
+            "id": 1,
+            "fantasy_name": 1,
+            "name": 1
+        }
+        )
 
         for location in all_gas_station_from_rj:
             location.pop("_id")
-            location.pop("state")
-            location.pop("ignore")
-            location.pop("country")
-            location.pop("neighborhood")
-            location.pop("document_number")
-            location.pop("street")
-            location.pop("zipcode")
-            location.pop("number")
-            location.pop("city")
             result.append(location)
 
         return result
 
 
-
 class ProductDao(Dao):
-
     def get_product_collection(self):
         self.connect()
         product_database = self.get_database()
