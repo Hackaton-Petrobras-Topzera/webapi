@@ -1,6 +1,8 @@
 import os
 import ast
 from pymongo import MongoClient
+from flask import request, jsonify
+import datetime
 
 from model.contract import Product
 
@@ -156,6 +158,18 @@ class OrderDao(Dao):
 
             self.close_connection()
             return all_orders
+        except Exception as e:
+            print(e)
+            return None
+
+
+    def post_order(self):
+        try:
+            orders = self.get_order_collection()
+            req = request.get_json(silent=True, force=True)
+            req['date'] = datetime.datetime.now()
+            orders.insert(req)
+            return jsonify(success="Ok")
         except Exception as e:
             print(e)
             return None

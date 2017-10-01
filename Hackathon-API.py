@@ -62,6 +62,12 @@ def get_all_opened_orders():
     orders = OrderService().select_opened_orders()
     return to_json(orders)
 
+# Not working
+@app.route('/order', methods=['POST'])
+def add_order():
+    OrderService().order_product();
+    return jsonify(success="Ok")
+
 
 if __name__ == '__main__':
     app.run()

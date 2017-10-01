@@ -20,3 +20,6 @@ class ProductService:
 class OrderService:
     def select_opened_orders(self):
         return OrderDao().search_orders();
+
+    def order_product(self):
+        return OrderDao.post_order();
