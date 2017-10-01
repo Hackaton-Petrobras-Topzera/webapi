@@ -140,7 +140,8 @@ class ProductDao(Dao):
             self.close_connection()
 
             return products
-        except Exception:
+        except Exception as e:
+            print(e)
             return None
 
     def suggestions(self):
@@ -178,7 +179,7 @@ class PaymentDao(ProductDao):
     def save(self, payment):
         try:
 
-            collection = self.get_product_collection()
+            collection = self.get_payment_collection()
             product_collection = self.get_product_collection()
             collection.insert(payment.__dict__)
 
