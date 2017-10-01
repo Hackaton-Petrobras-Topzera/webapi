@@ -1,8 +1,9 @@
-from flask import Flask
-from flask import jsonify
 import json
 
-from model.contract import GasStation
+from flask import Flask, jsonify
+
+from service.database import Dao
+from service.service import GasStationService
 
 app = Flask(__name__)
 
@@ -25,12 +26,19 @@ def hello_world():
 
 @app.route('/gasstation')
 def gas_station():
+    all_gas = GasStationService().select_all_gas()
+    return to_json(all_gas)
 
-    gas = GasStation(id=1, latitude=-22.929741, longitude=-43.179529)
-    gas2 = GasStation(id=2, latitude=-22.929692, longitude=-43.177769, favorite=True)
-    gas3 = GasStation(id=3, latitude=-22.928299, longitude=-43.179496, franchise=True)
+@app.route('/connection/status')
+def connection_status():
+    dao = Dao()
+    dao.connect()
+    dao.close_connection()
+    return jsonify(connection=True), 200
 
-    all_gas = [gas, gas2, gas3]
+@app.route('/gasstation')
+def gas_station():
+    all_gas = GasStationService().select_all_gas()
     return to_json(all_gas)
 
 
