@@ -149,7 +149,6 @@ class ProductDao(Dao):
             collection = self.get_product_collection()
             suggestions = []
 
-            # for item in collection.find({}).sort({"total_purchased": -1}):
             for item in collection.find({"$query": {}, "$orderby": {"total_purchased": -1}}).limit(5):
                 item.pop('_id')
                 item.pop('arrangement')
@@ -170,8 +169,8 @@ class ProductDao(Dao):
             return None
 
 
-class PaymentDao(Dao):
-    def get_product_collection(self):
+class PaymentDao(ProductDao):
+    def get_payment_collection(self):
         self.connect()
         payments_database = self.get_database()
         return payments_database['payments']
@@ -180,7 +179,18 @@ class PaymentDao(Dao):
         try:
 
             collection = self.get_product_collection()
+            product_collection = self.get_product_collection()
             collection.insert(payment.__dict__)
+
+            for purchase in payment.purchase:
+                total_purchased = product_collection.find_one({"id": purchase['product_id']}, {"total_purchased": 1})['total_purchased']
+                product_collection.update({"id": purchase['product_id']},
+                                          {"$set":
+                                              {
+                                                  "total_purchased": total_purchased + purchase['quantity']
+                                              }
+                                          })
+
             self.close_connection()
 
             return True
