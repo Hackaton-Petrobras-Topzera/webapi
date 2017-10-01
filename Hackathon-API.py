@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, jsonify
-from flask.ext.cors import CORS, cross_origin
+from flask.ext.cors import cross_origin
 
 from service.database import Dao
 from service.service import GasStationService, ProductService, OrderService
@@ -33,6 +33,13 @@ def hello_world():
 def gas_station():
     all_gas = GasStationService().select_all_gas()
     return to_json(all_gas)
+
+
+@app.route('/authorization', methods=['POST'])
+@cross_origin()
+def authorization():
+    # all_gas = GasStationService().select_all_gas()
+    return jsonify(success=True), 200
 
 
 @app.route('/products/all')

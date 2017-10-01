@@ -10,7 +10,8 @@ from model.contract import Product
 class Dao:
     def connect(self):
         # self.client = MongoClient('localhost', 27017)
-        self.client = MongoClient(os.environ['MONGO'])
+        # self.client = MongoClient(os.environ['MONGO'])
+        self.client = MongoClient("mongodb://topzera:HackatopPetro@ds155934.mlab.com:55934/hackathon_br")
 
     def close_connection(self):
         self.client.close()
