@@ -26,7 +26,7 @@ def to_json(data):
 @app.route('/')
 @cross_origin()
 def hello_world():
-    return 'Hello World!'
+    return '<h1>EQUIPE TOPZERA<h1>'
 
 
 @app.route('/gasstation')
