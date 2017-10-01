@@ -31,7 +31,8 @@ class LocationDao(Dao):
 
         all_gas_station_from_rj = collection.find({
             "state": "RJ",
-            "latitude": {"$ne": "NULL"}
+            "latitude": {"$ne": "NULL"},
+            "latitude": {"$type": "int"}
         }, {
             "latitude": 1,
             "longitude": 1,
